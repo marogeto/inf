@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Materialseite Informationstechnik - Martin Rösner</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link href="jquery-ui.css" rel="stylesheet">
+  <style>
+        body{
+                font-family: "Trebuchet MS", sans-serif;
+                margin: 50px;
+        }
+        .demoHeaders {
+                margin-top: 2em;
+        }
+        #dialog-link {
+                padding: .4em 1em .4em 20px;
+                text-decoration: none;
+                position: relative;
+        }
+        #dialog-link span.ui-icon {
+                margin: 0 5px 0 0;
+                position: absolute;
+                left: .2em;
+                top: 50%;
+                margin-top: -8px;
+        }
+        #icons {
+                margin: 0;
+                padding: 0;
+        }
+        #icons li {
+                margin: 2px;
+                position: relative;
+                padding: 4px 0;
+                cursor: pointer;
+                float: left;
+                list-style: none;
+        }
+        #icons span.ui-icon {
+                float: left;
+                margin: 0 4px;
+        }
+        .fakewindowcontain .ui-widget-overlay {
+                position: absolute;
+        }
+        select {
+                width: 200px;
+        }
+  </style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    var dezimalZahl = Math.ceil(Math.random() * 255);
+    var binaerZahl = "";
+    $( "#hilfeText" ).hide();
+    $( "#rechne input" ).checkboxradio({
+      icon: false
+    });
+    $( "#neueDezimalzahl" ).click(function(){ 
+        dezimalZahl = Math.ceil(Math.random() * 255);
+        $( "#zahl" ).html(dezimalZahl);
+	$('#checkbox-3').prop( "checked", false );
+	alert("TEST");
+        $( "#rechne checkbox").removeAttr('checked'); //attr( "checked", false );
+        //$( "#rechne label" ).each(function( i ) {
+        //    $( "#checkbox-"+i ).prop( "checked", false );
+        //});
+    });  
+    
+    $("#berechne").click(function(){
+        var ergebnis = 0;
+        binaerZahl="";
+        $( "#rechne label" ).each(function( i ) {
+            if( $( "#checkbox-"+i ).is( ":checked" ) ){
+                ergebnis += Math.pow(2, i);
+                binaerZahl=1 + binaerZahl;
+            } else {
+                binaerZahl=0 + binaerZahl;
+            }
+        });
+        if( dezimalZahl == ergebnis ){
+            $("#ergebnis").html('<img src="images/richtig.png" alt="richtig" width="20" />').show("slow").delay(2000).hide("slow");
+            $("#bin").html("= "+binaerZahl).show("slow").delay(2000).hide("slow");
+            
+        } else {
+            $("#ergebnis").html('<img src="images/falsch.png" alt="falsch" width="20" />').show("slow").delay(1000).hide("slow");
+        }
+    });
+    $("#binHilfe").on("click", function(){
+        $("#hilfeText" ).show().delay(5000).hide("slow");
+    });
+    $('#mySubmitButton').on('click', function() {
+      $.ajax({
+        data: $('#ipCalc').serialize(),
+        type: 'GET',
+        url: 'php/ipcalc.php',
+        dataType: 'HTML'
+      }).done(function( html ) {
+        $("#loesung").html( html );
+      });
+    });
+    $( "#videos" ).tabs({
+      collapsible: true
+    });
+    $( "#downloads" ).accordion({
+      heightStyle: "content"
+    });
+  } );
+  </script>
+</head>
+<body>
+<h1>Materialseite zum INF-Unterricht für die Kursstufe</h1>
+<h2>Downloads</h2>
+<div class="demoHeaders" id="downloads">
+  <h3>PaketTracer</h3>
+  <div>
+    <p><a href="pt6.2.exe"><img src="https://pbs.twimg.com/profile_images/897630357104840706/k2KPXYZ2_400x400.jpg" width="40" alt="" />Download Paket Tracer 6.2 für Windows</a></p>
+  </div>
+  <h3>Paket Tracer Übungen mit Lösungen</h3>
+  <div>
+    <table>
+    <tr><td><img src="http://bcms.net/wp-content/uploads/2015/10/PDF-Logo.jpg" width="40" alt="pdf" /></td>
+        <td><a href="">Einführung ins das Internet</a></td></tr>
+    <tr><td><img src="http://bcms.net/wp-content/uploads/2015/10/PDF-Logo.jpg" width="40" alt="pdf" /></td>
+        <td><a href="">IP-Netze - IP-Adressen - Routing</a></td></tr>
+    <tr><td><img src="http://bcms.net/wp-content/uploads/2015/10/PDF-Logo.jpg" width="40" alt="pdf" /></td>
+        <td><a href="">Pakettracer-Übung</a></td></tr>
+    </table>
+  </div>
+  <h3>IP-Rechner</h3>
+  <div>  
+    <form id="ipCalc">
+    <label for="ipAdresse">IP-Addresse</label>
+    <input id="ipAdresse" type="text" name="ipAdresse" value="192.168.178.1"/>
+    <br/>
+    <label for="subnetmask">Subnetmask</label>
+    <input id="subnetmask" type="text" name="subnetmask" value="255.255.255.0" />
+    <br/>
+    <button id="mySubmitButton" type="button">Berechnen</button>
+    </form> 
+    <div id="loesung"></div>
+
+  </div>	
+
+  <h3>Dezimal in Binär umrechnen</h3>
+  <div>
+    <h2 class="demoHeaders">Wandeln Sie um: <span id="zahl">0</span> <span id="bin"></span></h2>
+    <fieldset id="rechne">
+    <label for="checkbox-7">2<sup>7</sup>=128</label>
+    <input type="checkbox" name="checkbox-7" id="checkbox-7" />
+    <label for="checkbox-6">2<sup>6</sup>=64</label>
+    <input type="checkbox" name="checkbox-6" id="checkbox-6" />
+    <label for="checkbox-5">2<sup>5</sup>=32</label>
+    <input type="checkbox" name="checkbox-5" id="checkbox-5" />
+    <label for="checkbox-4">2<sup>4</sup>=16</label>
+    <input type="checkbox" name="checkbox-4" id="checkbox-4" />
+    <label for="checkbox-3">2<sup>3</sup>=8</label>
+    <input type="checkbox" name="checkbox-3" id="checkbox-3" />
+    <label for="checkbox-2">2<sup>2</sup>=4</label>
+    <input type="checkbox" name="checkbox-2" id="checkbox-2" />
+    <label for="checkbox-1">2<sup>1</sup>=2</label>
+    <input type="checkbox" name="checkbox-1" id="checkbox-1" />
+    <label for="checkbox-0">2<sup>0</sup>=1</label>
+    <input type="checkbox" name="checkbox-0" id="checkbox-0" />
+    <span id="ergebnis"></span>
+    
+    </fieldset>
+    <button id="neueDezimalzahl">Neue Dezimalzahl</button>
+    <button id="binHilfe">Hilfe</button>
+    <button id="berechne">Berechne</button>
+    <div id="hilfeText"><p>An dieser Stelle müssen Sie die acht Buttons so setzen, dass das Bitmuster entsteht, welches der Dezimalzahl entspricht.</p></div>
+  
+  </div>
+  <h3>PHP Übungen mit Lösungen</h3>
+  <div>
+    <p>Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis. Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui. </p>
+    <ul>
+      <li>List item</li>
+      <li>List item</li>
+      <li>List item</li>
+      <li>List item</li>
+      <li>List item</li>
+      <li>List item</li>
+      <li>List item</li>
+    </ul>
+  </div>
+
+</div>
+
+<h2>Videos</h2>
+<div class="demoHeaders" id="videos">
+  <ul>
+    <li><a href="#videos-1">Nunc tincidunt</a></li>
+    <li><a href="#videos-2">Proin dolor</a></li>
+    <li><a href="#vide0s-3">Aenean lacinia</a></li>
+  </ul>
+  <div id="videos-1">
+    <p><strong>Click this tab again to close the content pane.</strong></p>
+
+
+
+  </div>
+  <div id="videos-2">
+    <p><strong>Click this tab again to close the content pane.</strong></p>
+    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+  </div>
+  <div id="videos-3">
+    <p><strong>Click this tab again to close the content pane.</strong></p>
+    <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+  </div>
+</div>
+ 
+ 
+</body>
+</html>
